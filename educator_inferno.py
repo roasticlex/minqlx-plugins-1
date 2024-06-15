@@ -2,7 +2,7 @@
 
 import minqlx
 
-class EducatorInferno(minqlx.Plugin):
+class educator_inferno(minqlx.Plugin):
     def __init__(self):
         super().__init__()
         self.add_command("educator_inferno", self.cmd_educator_inferno, 5)
