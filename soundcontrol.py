@@ -84,8 +84,10 @@ class soundcontrol(minqlx.Plugin):
 
     def check_if_banned(self, player):
         with open("soundbans.txt", 'r') as file:
-            content = file.read()
-            if str(player.steam_id) in content:
-                return True
-            else:
-                return False
+            for num, line in enumerate(file, 1):
+                if str(player.steam_id) in line:
+                    #check if ban is expired by reading expiry date from file line
+                    if line.split(",")[1] > (datetime.datetime.now()).strftime(TIME_FORMAT):
+                        return True
+                else:
+                    return False
