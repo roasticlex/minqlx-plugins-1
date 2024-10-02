@@ -1,6 +1,7 @@
 import minqlx
 import re
 import datetime
+import fileinput
 
 LENGTH_REGEX = re.compile(r"(?P<number>[0-9]+) (?P<scale>seconds?|minutes?|hours?|days?|weeks?|months?|years?)")
 TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
@@ -76,8 +77,17 @@ class soundcontrol(minqlx.Plugin):
                 else:
                     ban_exists = False
 
-            if not ban_exists:
+            if ban_exists:
+                with fileinput.input("soundbans.txt", inplace=True) as file:
+                    for line in file:
+                        if str(player.steam_id) in line:
+                            #overwrite current ban line with new ban
+                            print("{},{},{},{}\n".format(str(target_player.steam_id), expires, reason, now), end='')
+                        else:
+                            print(line, end='')
+            else:
                 f = open("soundbans.txt", "a")
+                #add new ban line to end of file
                 f.write("{},{},{},{}\n".format(str(target_player.steam_id), expires, reason, now))
                 f.close()
                 channel.reply("^6{} ^7has been banned from sounds. Ban expires on ^6{}^7.".format(name, expires))
