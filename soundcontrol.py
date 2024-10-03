@@ -34,10 +34,10 @@ class soundcontrol(minqlx.Plugin):
         else:
             name = ident
 
-        # Permission level 5 players not bannable.
-        #if self.db.has_permission(ident, 5):
-        #    channel.reply("^6{}^7 has permission level 5 and cannot be banned.".format(name))
-        #    return
+        #Permission level 5 players not bannable.
+        if self.db.has_permission(ident, 5):
+            channel.reply("^6{}^7 has permission level 5 and cannot be banned.".format(name))
+            return
         
 
         if len(msg) > 4:
