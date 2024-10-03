@@ -11,6 +11,7 @@ class soundcontrol(minqlx.Plugin):
     def __init__(self):
         super().__init__()
         self.add_command("soundban", self.cmd_soundban, usage="<id> <length> seconds|minutes|hours|days|... [reason]")
+        self.add_command("soundunban", self.cmd_soundunban, 2, usage="<id>")
 
     def cmd_soundban(self, player, msg, channel):
         if len(msg) < 4:
@@ -34,7 +35,7 @@ class soundcontrol(minqlx.Plugin):
         else:
             name = ident
 
-        #Permission level 5 players not bannable.
+        # Permission level 5 players not bannable.
         if self.db.has_permission(ident, 5):
             channel.reply("^6{}^7 has permission level 5 and cannot be banned.".format(name))
             return
@@ -91,6 +92,37 @@ class soundcontrol(minqlx.Plugin):
                 f.write("{},{},{},{}\n".format(str(target_player.steam_id), expires, reason, now))
                 f.close()
                 channel.reply("^6{} ^7has been banned from sounds. Ban expires on ^6{}^7.".format(name, expires))
+
+    def cmd_soundunban(self, player, msg, channel):
+        """Unbans a player if soundbanned."""
+        if len(msg) < 2:
+            return minqlx.RET_USAGE
+
+        try:
+            ident = int(msg[1])
+            target_player = None
+            if 0 <= ident < 64:
+                target_player = self.player(ident)
+                ident = target_player.steam_id
+        except ValueError:
+            channel.reply("Invalid ID. Use either a client ID or a SteamID64.")
+            return
+        except minqlx.NonexistentPlayerError:
+            channel.reply("Invalid client ID. Use either a client ID or a SteamID64.")
+            return
+        
+        if target_player:
+            name = target_player.name
+        else:
+            name = ident
+
+        with fileinput.input("soundbans.txt", inplace=True) as file:
+            for line in file:
+                if str(player.steam_id) in line:
+                    #remove ban line if steam id found
+                    print("", end='')
+                else:
+                    print(line, end='')
 
     def check_if_banned(self, player):
         with open("soundbans.txt", 'r') as file:
