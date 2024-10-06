@@ -22,6 +22,7 @@ import random
 import time
 import re
 import importlib
+import fileinput
 soundcontrol = importlib.import_module("minqlx-plugins.soundcontrol").soundcontrol()
 
 from minqlx.database import Redis
@@ -2195,15 +2196,22 @@ class funnysounds(minqlx.Plugin):
             return
 
         msg = self.clean_text(msg)
+        delay = 0
         for key in _re_:
-        	if _re_[key][0].match(msg):
-        		self.play_sound(_re_[key][1], player)
+            if _re_[key][0].match(msg):
+                with fileinput.input("soundcontrol/category_sound_delays.txt") as file:
+                    for line in file:
+                        if msg in line:
+                            delay = line.split(",")[0]
+                self.play_sound(_re_[key][1], player, delay)
 
-    def play_sound(self, path, player):
+    def play_sound(self, path, player, delay):
         if not self.last_sound:
             pass
-        elif time.time() - self.last_sound < self.get_cvar("qlx_funSoundDelay", int):
-            return
+        else:            
+            self.msg(delay)
+            if time.time() - self.last_sound < self.get_cvar("qlx_funSoundDelay", int):
+                return
 
         self.last_sound = time.time()
 
