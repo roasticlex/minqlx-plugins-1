@@ -12,6 +12,8 @@ class soundcontrol(minqlx.Plugin):
         super().__init__()
         self.add_command("soundban", self.cmd_soundban, usage="<id> <length> seconds|minutes|hours|days|... [reason]")
         self.add_command("soundunban", self.cmd_soundunban, 2, usage="<id>")
+        self.add_command("adjustsounddelay", self.cmd_adjustsounddelay, 2, usage="<short/medium/long> <value>")
+        self.add_command("addsound", self.cmd_addsound, 2, usage="<short/medium/long> <sound name>")
 
     def cmd_soundban(self, player, msg, channel):
         if len(msg) < 4:
@@ -71,7 +73,7 @@ class soundcontrol(minqlx.Plugin):
             now = datetime.datetime.now().strftime(TIME_FORMAT)
             expires = (datetime.datetime.now() + td).strftime(TIME_FORMAT)
 
-            with open("soundbans.txt", 'r') as file:
+            with open("soundcontrol/soundbans.txt", 'r') as file:
                 content = file.read()
                 if str(target_player.steam_id) in content:
                     ban_exists = True
@@ -87,7 +89,7 @@ class soundcontrol(minqlx.Plugin):
                         else:
                             print(line, end='')
             else:
-                f = open("soundbans.txt", "a")
+                f = open("soundcontrol/soundbans.txt", "a")
                 #add new ban line to end of file
                 f.write("{},{},{},{}\n".format(str(target_player.steam_id), expires, reason, now))
                 f.close()
@@ -116,7 +118,7 @@ class soundcontrol(minqlx.Plugin):
         else:
             name = ident
 
-        with fileinput.input("soundbans.txt", inplace=True) as file:
+        with fileinput.input("soundcontrol/soundbans.txt", inplace=True) as file:
             for line in file:
                 if str(player.steam_id) in line:
                     #remove ban line if steam id found
@@ -125,7 +127,7 @@ class soundcontrol(minqlx.Plugin):
                     print(line, end='')
 
     def check_if_banned(self, player):
-        with open("soundbans.txt", 'r') as file:
+        with open("soundcontrol/soundbans.txt", 'r') as file:
             for num, line in enumerate(file, 1):
                 if str(player.steam_id) in line:
                     #check if ban is expired by reading expiry date from file line
@@ -133,3 +135,44 @@ class soundcontrol(minqlx.Plugin):
                         return True
                 else:
                     return False
+
+    def cmd_adjustsounddelay(self, player, msg, channel):
+        if len(msg) < 3:
+            return minqlx.RET_USAGE
+        
+        if msg[1] not in ["short", "medium", "long"]:
+            channel.reply("Category must be short, medium or long.")
+            return    
+        
+        try:
+            int(msg[2])            
+        except ValueError: 
+            channel.reply("Value must be integer(number).")
+            return  
+
+        with fileinput.input("soundcontrol/sound_delays.txt", inplace=True) as file:
+            for line in file:
+                if msg[1] in line:
+                    #write category and duration at appropriate line
+                    print("{},{}\n".format(msg[1], msg[2]), end='')
+                else:
+                    print(line, end='')
+
+        channel.reply("Delay updated.")
+
+    def cmd_addsound(self, player, msg, channel):
+        if len(msg) < 3:
+            return minqlx.RET_USAGE
+        
+        if msg[1] not in ["short", "medium", "long"]:
+            channel.reply("Category must be short, medium or long.")
+            return 
+        
+        f = open("soundcontrol/category_sound_delays.txt", "a")
+        f.write("{},{}\n".format(msg[1], msg[2]))
+        f.close()
+
+        channel.reply("Sound delay added.")
+        
+
+    
