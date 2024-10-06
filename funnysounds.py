@@ -2199,18 +2199,32 @@ class funnysounds(minqlx.Plugin):
         delay = 0
         for key in _re_:
             if _re_[key][0].match(msg):
-                with fileinput.input("soundcontrol/category_sound_delays.txt") as file:
+                with fileinput.input("minqlx-plugins/soundcontrol/category_sound_delays.txt") as file:
                     for line in file:
                         if msg in line:
                             delay = line.split(",")[0]
                 self.play_sound(_re_[key][1], player, delay)
 
-    def play_sound(self, path, player, delay):
-        if not self.last_sound:
+    def play_sound(self, path, player, delay): 
+        delay_duration = 0 
+
+        if not self.last_sound: 
             pass
         else:            
-            self.msg(delay)
-            if time.time() - self.last_sound < self.get_cvar("qlx_funSoundDelay", int):
+            with fileinput.input("minqlx-plugins/soundcontrol/sound_delays.txt") as file:
+                for line in file:
+                    if str(delay) in line:
+                        delay_duration = int(line.split(",")[1])
+
+            with fileinput.input("minqlx-plugins/soundcontrol/custom_sound_delays.txt") as file:
+                for line in file:
+                    if str(delay) in line:
+                        delay_duration = int(line.split(",")[1])
+
+            if not delay_duration:
+                delay_duration = self.get_cvar("qlx_funSoundDelay", int)
+
+            if time.time() - self.last_sound < delay_duration:
                 return
 
         self.last_sound = time.time()
