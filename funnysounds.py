@@ -2162,8 +2162,7 @@ class funnysounds(minqlx.Plugin):
         self.add_command("cookies", self.cmd_cookies)
         self.last_sound = None
         self.add_command(("soundlist", "slist"), self.cmd_soundlist, client_cmd_perm=0, usage="<pagenum>")
-        self.set_cvar_once("qlx_funSoundDelay", "3")
-
+        self.set_cvar_once("qlx_funSoundDelay", "3")  
 
     def cmd_soundlist(self, player, msg, channel):
         """Prints a page of the sound list"""
@@ -2211,15 +2210,16 @@ class funnysounds(minqlx.Plugin):
         if not self.last_sound: 
             pass
         else:            
-            with fileinput.input("minqlx-plugins/soundcontrol/sound_delays.txt") as file:
-                for line in file:
-                    if str(delay) in line:
-                        delay_duration = int(line.split(",")[1])
+            if delay:
+                with fileinput.input("minqlx-plugins/soundcontrol/sound_delays.txt") as file:
+                    for line in file:
+                        if str(delay) in line:
+                            delay_duration = int(line.split(",")[1])
 
-            with fileinput.input("minqlx-plugins/soundcontrol/custom_sound_delays.txt") as file:
-                for line in file:
-                    if str(delay) in line:
-                        delay_duration = int(line.split(",")[1])
+                with fileinput.input("minqlx-plugins/soundcontrol/custom_sound_delays.txt") as file:
+                    for line in file:
+                        if str(delay) in line:
+                            delay_duration = int(line.split(",")[1])
 
             if not delay_duration:
                 delay_duration = self.get_cvar("qlx_funSoundDelay", int)
@@ -2232,6 +2232,12 @@ class funnysounds(minqlx.Plugin):
         if not soundcontrol.check_if_banned(player):
             for p in self.players():
                 if self.db.get_flag(p, "essentials:sounds_enabled", default=True):
+                    if player.steam_id not in soundcontrol.sounds_per_minute:
+                        soundcontrol.sounds_per_minute[player.steam_id] = 1
+                    else:
+                        soundcontrol.sounds_per_minute[player.steam_id] += 1   
+
+                    soundcontrol.handle_sound(player)
                     super().play_sound(path, p)
 
     def cmd_cookies(self, player, msg, channel):
