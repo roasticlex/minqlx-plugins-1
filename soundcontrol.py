@@ -256,7 +256,7 @@ class soundcontrol(minqlx.Plugin):
                 
             channel.reply("soundautobanduration set.")
     
-    @minqlx.delay(20)
+    @minqlx.delay(60)
     def handle_sound(self, player):
         soundautobanthreshold = 0
         soundautobanduration = 0
