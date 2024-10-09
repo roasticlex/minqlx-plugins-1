@@ -14,7 +14,7 @@ class soundcontrol(minqlx.Plugin):
         self.add_command("soundunban", self.cmd_soundunban, 2, usage="<id>")
         self.add_command("adjustsounddelay", self.cmd_adjustsounddelay, 2, usage="<short/medium/long> <value>")
         self.add_command("addsound", self.cmd_addsound, 2, usage="<short/medium/long> <sound name>")
-        self.add_command("customsounddelay", self.cmd_customsounddelay, 2, usage="<sound name> <value>")
+        self.add_command("customsounddelay", self.cmd_customsounddelay, 2, usage="<value> <sound name>")
         self.add_command("removesounddelay", self.cmd_removesounddelay, 2, usage="<sound name>")
         self.add_command("soundautobanthreshold", self.cmd_soundautobanthreshold, 2, usage="<value>")
         self.add_command("soundautobanduration", self.cmd_soundautobanduration, 2, usage="<length> seconds|minutes|hours|days|...")
@@ -153,7 +153,7 @@ class soundcontrol(minqlx.Plugin):
             channel.reply("Value must be integer(number).")
             return  
 
-        with fileinput.input("minqlx-plugins/soundcontrol/sound_delays.txt", inplace=True) as file:
+        with fileinput.input("minqlx-plugins/soundcontrol/config.txt", inplace=True) as file:
             for line in file:
                 if msg[1] in line:
                     #write category and duration at appropriate line
@@ -171,8 +171,16 @@ class soundcontrol(minqlx.Plugin):
             channel.reply("Category must be short, medium or long.")
             return 
         
+        with fileinput.input("minqlx-plugins/soundcontrol/custom_sound_delays.txt", inplace=True) as file:
+            for line in file:
+                if msg[2] in line:
+                    #remove sound line if it exists
+                    print("", end='')
+                else:
+                    print(line, end='')
+                
         f = open("minqlx-plugins/soundcontrol/category_sound_delays.txt", "a")
-        f.write("{},{}\n".format(msg[1], msg[2]))
+        f.write("{},{}\n".format(msg[1], " ".join(msg[2:])))
         f.close()
 
         channel.reply("Sound delay added.")
@@ -182,21 +190,21 @@ class soundcontrol(minqlx.Plugin):
             return minqlx.RET_USAGE
         
         try:
-            int(msg[2])            
+            int(msg[1])            
         except ValueError: 
             channel.reply("Value must be integer(number).")
             return 
         
         with fileinput.input("minqlx-plugins/soundcontrol/category_sound_delays.txt", inplace=True) as file:
             for line in file:
-                if msg[1] in line:
+                if msg[2] in line:
                     #remove sound line if it exists
                     print("", end='')
                 else:
                     print(line, end='')
 
         f = open("minqlx-plugins/soundcontrol/custom_sound_delays.txt", "a")
-        f.write("{},{}\n".format(msg[1], msg[2]))
+        f.write("{},{}\n".format(msg[1], " ".join(msg[2:])))
         f.close()
 
         channel.reply("Custom sound delay added.")
@@ -207,7 +215,7 @@ class soundcontrol(minqlx.Plugin):
         
         with fileinput.input("minqlx-plugins/soundcontrol/category_sound_delays.txt", inplace=True) as file:
             for line in file:
-                if msg[1] in line:
+                if " ".join(msg[1:]) in line:
                     #remove sound line if it exists
                     print("", end='')
                 else:
@@ -215,7 +223,7 @@ class soundcontrol(minqlx.Plugin):
     
         with fileinput.input("minqlx-plugins/soundcontrol/custom_sound_delays.txt", inplace=True) as file:
             for line in file:
-                if msg[1] in line:
+                if  " ".join(msg[1:]) in line:
                     #remove sound line if it exists
                     print("", end='')
                 else:
