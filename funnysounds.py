@@ -2196,35 +2196,36 @@ class funnysounds(minqlx.Plugin):
 
         msg = self.clean_text(msg)
         delay = 0
+        delay_category = ""
+
         for key in _re_:
-            if _re_[key][0].match(msg):
+            if _re_[key][0].match(msg):                
                 with fileinput.input("minqlx-plugins/soundcontrol/category_sound_delays.txt") as file:
                     for line in file:
                         if msg in line:
-                            delay = line.split(",")[0]
+                            delay_category = line.split(",")[0]
+
+                if delay_category:
+                    with fileinput.input("minqlx-plugins/soundcontrol/config.txt") as file:
+                        for line in file:
+                            if delay_category in line:
+                                delay = int(line.split(",")[1])
+                else:
+                    with fileinput.input("minqlx-plugins/soundcontrol/custom_sound_delays.txt") as file:
+                        for line in file:
+                            if msg in line:
+                                delay = line.split(",")[0]
+
                 self.play_sound(_re_[key][1], player, delay)
 
-    def play_sound(self, path, player, delay): 
-        delay_duration = 0 
-
+    def play_sound(self, path, player, delay = 0):         
         if not self.last_sound: 
             pass
         else:            
-            if delay:
-                with fileinput.input("minqlx-plugins/soundcontrol/sound_delays.txt") as file:
-                    for line in file:
-                        if str(delay) in line:
-                            delay_duration = int(line.split(",")[1])
+            if not delay:
+                delay = self.get_cvar("qlx_funSoundDelay", int)
 
-                with fileinput.input("minqlx-plugins/soundcontrol/custom_sound_delays.txt") as file:
-                    for line in file:
-                        if str(delay) in line:
-                            delay_duration = int(line.split(",")[1])
-
-            if not delay_duration:
-                delay_duration = self.get_cvar("qlx_funSoundDelay", int)
-
-            if time.time() - self.last_sound < delay_duration:
+            if time.time() - self.last_sound < delay:
                 return
 
         self.last_sound = time.time()
