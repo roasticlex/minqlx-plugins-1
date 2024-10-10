@@ -46,9 +46,9 @@ class soundcontrol(minqlx.Plugin):
             name = ident
 
         # Permission level 5 players not bannable.
-        if self.db.has_permission(ident, 5):
-            channel.reply("^6{}^7 has permission level 5 and cannot be banned.".format(name))
-            return
+        #if self.db.has_permission(ident, 5):
+        #    channel.reply("^6{}^7 has permission level 5 and cannot be banned.".format(name))
+        #    return
         
         r = LENGTH_REGEX.match(" ".join(msg[2:4]).lower())
         if not r:
@@ -79,23 +79,28 @@ class soundcontrol(minqlx.Plugin):
 
             with open("minqlx-plugins/soundcontrol/soundbans.txt", 'r') as file:
                 content = file.read()
-                if str(target_player.steam_id) in content:
+                if str(ident) in content:
                     ban_exists = True
                 else:
                     ban_exists = False
+                file.close()
 
             if ban_exists:
                 with fileinput.input("minqlx-plugins/soundcontrol/soundbans.txt", inplace=True) as file:
                     for line in file:
                         if str(player.steam_id) in line:
                             #overwrite current ban line with new ban
-                            print("{},{},{}\n".format(str(target_player.steam_id), expires, now), end='')
+                            print("{},{},{}\n".format(str(ident), expires, now), end='')
                         else:
                             print(line, end='')
+                    file.close()
+                    if channel:
+                        channel.reply("^6{} ^7 ban updated. Ban expires on ^6{}^7.".format(name, expires))
             else:
+                self.msg("")
                 f = open("minqlx-plugins/soundcontrol/soundbans.txt", "a")
                 #add new ban line to end of file
-                f.write("{},{},{}\n".format(str(target_player.steam_id), expires, now))
+                f.write("{},{},{}\n".format(str(ident), expires, now))
                 f.close()
                 if channel:
                     channel.reply("^6{} ^7has been banned from sounds. Ban expires on ^6{}^7.".format(name, expires))
@@ -125,11 +130,13 @@ class soundcontrol(minqlx.Plugin):
 
         with fileinput.input("minqlx-plugins/soundcontrol/soundbans.txt", inplace=True) as file:
             for line in file:
-                if str(player.steam_id) in line:
+                if str(ident) in line:
                     #remove ban line if steam id found
                     print("", end='')
                 else:
                     print(line, end='')
+
+        channel.reply("{} unbanned.".format(ident))
 
     def check_if_banned(self, player):
         with fileinput.input("minqlx-plugins/soundcontrol/soundbans.txt") as file:
