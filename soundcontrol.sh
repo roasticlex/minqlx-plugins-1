@@ -1,3 +1,4 @@
+#run this script in minqlx-plugins folder
 mkdir soundcontrol
 cd soundcontrol
 touch soundbans.txt
