@@ -46,9 +46,9 @@ class soundcontrol(minqlx.Plugin):
             name = ident
 
         # Permission level 5 players not bannable.
-        #if self.db.has_permission(ident, 5):
-        #    channel.reply("^6{}^7 has permission level 5 and cannot be banned.".format(name))
-        #    return
+        if self.db.has_permission(ident, 5):
+            channel.reply("^6{}^7 has permission level 5 and cannot be banned.".format(name))
+            return
         
         r = LENGTH_REGEX.match(" ".join(msg[2:4]).lower())
         if not r:
@@ -83,7 +83,6 @@ class soundcontrol(minqlx.Plugin):
                     ban_exists = True
                 else:
                     ban_exists = False
-                file.close()
 
             if ban_exists:
                 with fileinput.input("minqlx-plugins/soundcontrol/soundbans.txt", inplace=True) as file:
@@ -93,7 +92,6 @@ class soundcontrol(minqlx.Plugin):
                             print("{},{},{}\n".format(str(ident), expires, now), end='')
                         else:
                             print(line, end='')
-                    file.close()
                     if channel:
                         channel.reply("^6{} ^7 ban updated. Ban expires on ^6{}^7.".format(name, expires))
             else:
