@@ -2,6 +2,7 @@ import minqlx
 import re
 import datetime
 import fileinput
+import os
 
 LENGTH_REGEX = re.compile(r"(?P<number>[0-9]+) (?P<scale>seconds?|minutes?|hours?|days?|weeks?|months?|years?)")
 TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
@@ -87,7 +88,7 @@ class soundcontrol(minqlx.Plugin):
             if ban_exists:
                 with fileinput.input("minqlx-plugins/soundcontrol/soundbans.txt", inplace=True) as file:
                     for line in file:
-                        if str(player.steam_id) in line:
+                        if str(ident) in line:
                             #overwrite current ban line with new ban
                             print("{},{},{}\n".format(str(ident), expires, now), end='')
                         else:
@@ -292,9 +293,12 @@ class soundcontrol(minqlx.Plugin):
         self.sounds_per_minute[player.steam_id] = 0
 
     def cmd_checksoundbans(self, player, msg, channel):
-        with fileinput.input("minqlx-plugins/soundcontrol/soundbans.txt") as file:
-            for line in file:
-                channel.reply(line)
+        if os.stat("minqlx-plugins/soundcontrol/soundbans.txt").st_size != 0:
+            with fileinput.input("minqlx-plugins/soundcontrol/soundbans.txt") as file:
+                for line in file:
+                    channel.reply(line)
+        else:
+            channel.reply("No sound bans are set.")
 
     def cmd_soundcontrolconfig(self, player, msg, channel):
         with fileinput.input("minqlx-plugins/soundcontrol/config.txt") as file:
