@@ -2231,13 +2231,13 @@ class funnysounds(minqlx.Plugin):
         self.last_sound = time.time()
 
         if not soundcontrol.check_if_banned(player):
-            for p in self.players():
-                if self.db.get_flag(p, "essentials:sounds_enabled", default=True):
-                    if p.steam_id not in soundcontrol.sounds_per_minute:
-                        soundcontrol.sounds_per_minute[p.steam_id] = 1
-                    else:
-                        soundcontrol.sounds_per_minute[p.steam_id] += 1   
+            if player.steam_id not in soundcontrol.sounds_per_minute:
+                soundcontrol.sounds_per_minute[player.steam_id] = 1
+            else:
+                soundcontrol.sounds_per_minute[player.steam_id] += 1 
 
+            for p in self.players():
+                if self.db.get_flag(p, "essentials:sounds_enabled", default=True):   
                     soundcontrol.handle_sound(p)
                     super().play_sound(path, p)
 
