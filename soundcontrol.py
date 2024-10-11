@@ -292,7 +292,13 @@ class soundcontrol(minqlx.Plugin):
 
         if soundautobanthreshold and soundautobanduration:
             if self.sounds_per_minute[player.steam_id] > soundautobanthreshold:
-                self.cmd_soundban(player.steam_id, soundautobanduration, "")
+                msg = []
+                msg.append("")
+                msg.append(player.steam_id)
+                msg.append(soundautobanduration)
+                msg.append("")
+                self.cmd_soundban(player, msg, "")
+                #self.cmd_soundban(player.steam_id, soundautobanduration, "")
 
         self.sounds_per_minute[player.steam_id] = 0
 
