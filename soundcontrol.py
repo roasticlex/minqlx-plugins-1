@@ -95,6 +95,8 @@ class soundcontrol(minqlx.Plugin):
                             print(line, end='')
                     if channel:
                         channel.reply("^6{} ^7 ban updated. Ban expires on ^6{}^7.".format(name, expires))
+                    else:
+                        self.msg("^6{} ^7has been banned from sounds. Ban expires on ^6{}^7.".format(name, expires))
             else:                
                 f = open("minqlx-plugins/soundcontrol/soundbans.txt", "a")
                 #add new ban line to end of file                
@@ -102,7 +104,8 @@ class soundcontrol(minqlx.Plugin):
                 f.close()
                 if channel:
                     channel.reply("^6{} ^7has been banned from sounds. Ban expires on ^6{}^7.".format(name, expires))
-            
+                else:
+                    self.msg("^6{} ^7has been banned from sounds. Ban expires on ^6{}^7.".format(name, expires))
             #remove ghost blank line from top of file..or any ghost empty lines for that matter..
             for line in fileinput.input("minqlx-plugins/soundcontrol/soundbans.txt", inplace=True):
                 if line.rstrip():
@@ -138,6 +141,11 @@ class soundcontrol(minqlx.Plugin):
                     print("", end='')
                 else:
                     print(line, end='')
+
+        #remove ghost blank line from top of file..or any ghost empty lines for that matter..
+        for line in fileinput.input("minqlx-plugins/soundcontrol/soundbans.txt", inplace=True):
+            if line.rstrip():
+                print(line)
 
         channel.reply("{} unbanned.".format(ident))
 
@@ -276,7 +284,7 @@ class soundcontrol(minqlx.Plugin):
                 
             channel.reply("soundautobanduration set.")
     
-    @minqlx.delay(60) 
+    @minqlx.delay(20) 
     def handle_sound(self, player):
         soundautobanthreshold = 0
         soundautobanduration = 0
