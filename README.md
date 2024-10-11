@@ -1,3 +1,9 @@
+<strong>bigbrother.py</strong> 
+- automatically censors chat and returns censored verion of text
+- requires an API key from: https://api-ninjas.com/api/profanityfilter
+- set qlx_big_brother_api_key in server.cfg
+- the free API will handle 10,000 requests a month
+
 <strong>bot_antispec.py</strong> - fixes bug with bot_minplayers and teamsizes lower than player limit that causes bots to spec (kicks them)
 
 <strong>crash.py</strong> - !crash for random crash noob intro sounds :D
