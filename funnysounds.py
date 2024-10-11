@@ -2214,7 +2214,7 @@ class funnysounds(minqlx.Plugin):
                     with fileinput.input("minqlx-plugins/soundcontrol/custom_sound_delays.txt") as file:
                         for line in file:
                             if msg in line:
-                                delay = line.split(",")[0]
+                                delay = int(line.split(",")[0])
 
                 self.play_sound(_re_[key][1], player, delay)
 
