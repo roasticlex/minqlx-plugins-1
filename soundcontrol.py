@@ -47,9 +47,9 @@ class soundcontrol(minqlx.Plugin):
             name = ident
 
         # Permission level 5 players not bannable.
-        if self.db.has_permission(ident, 5):
-            channel.reply("^6{}^7 has permission level 5 and cannot be banned.".format(name))
-            return
+        #if self.db.has_permission(ident, 5):
+        #    channel.reply("^6{}^7 has permission level 5 and cannot be banned.".format(name))
+        #    return
         
         r = LENGTH_REGEX.match(" ".join(msg[2:4]).lower())
         if not r:
@@ -89,20 +89,24 @@ class soundcontrol(minqlx.Plugin):
                 with fileinput.input("minqlx-plugins/soundcontrol/soundbans.txt", inplace=True) as file:
                     for line in file:
                         if str(ident) in line:
-                            #overwrite current ban line with new ban
+                            #overwrite current ban line with new ban                            
                             print("{},{},{}\n".format(str(ident), expires, now), end='')
                         else:
                             print(line, end='')
                     if channel:
                         channel.reply("^6{} ^7 ban updated. Ban expires on ^6{}^7.".format(name, expires))
-            else:
-                self.msg("")
+            else:                
                 f = open("minqlx-plugins/soundcontrol/soundbans.txt", "a")
-                #add new ban line to end of file
+                #add new ban line to end of file                
                 f.write("{},{},{}\n".format(str(ident), expires, now))
                 f.close()
                 if channel:
                     channel.reply("^6{} ^7has been banned from sounds. Ban expires on ^6{}^7.".format(name, expires))
+            
+            #remove ghost blank line from top of file..or any ghost empty lines for that matter..
+            for line in fileinput.input("minqlx-plugins/soundcontrol/soundbans.txt", inplace=True):
+                if line.rstrip():
+                    print(line)
 
     def cmd_soundunban(self, player, msg, channel):        
         """Unbans a player if soundbanned."""
