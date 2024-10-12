@@ -82,6 +82,27 @@
 
 <strong>ragespec.py</strong> - !ragespec to...ragespec!
 
+<strong>soundcontrol.py</strong> - control spamming/delay of sounds and optionally autoban from using sounds
+- requires https://raw.githubusercontent.com/roasticlex/minqlx-plugins-1/refs/heads/master/funnysounds.py and https://raw.githubusercontent.com/roasticlex/minqlx-plugins-1/refs/heads/master/soundcontrol.sh
+- put soundcontrol.sh under minqlx-plugins folder
+- type: chmod +x soundcontrol.sh
+- type: ./soundcontrol.sh
+- this will create soundcontrol folder and config files
+
+COMMANDS
+--------
+- !soundban usage="<id> <length> seconds|minutes|hours|days|..." -id can be either player or steam id
+- !soundunban usage="<id>" -id can be either player or steam id
+- !adjustsounddelay usage="<short/medium/long> <value>"
+- !addsound" usage="<short/medium/long> <sound name>"
+- !customsounddelay" usage="<value> <sound name>" -add custom sound delay value (in seconds)
+- !removesounddelay" usage="<sound name>"
+- !soundautobanthreshold usage="<value>" -set the amount of time a sound needs to be repeated within a minute to be autobanned
+- !soundautobanduration usage="<length> seconds|minutes|hours|days|..."
+- !checksoundbans -lists sound bans
+- !soundcontrolconfig -list config values
+
+
 <strong>uberstats.py</strong> - various awards and stats added during and endgame
 - !score for your scoreboard placement (when you are below the scoreboard during game)
 - requires workshop item 1304624898 if you want weapon award sounds
