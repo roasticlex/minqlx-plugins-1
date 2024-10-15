@@ -16,6 +16,19 @@
 
 # You should have received a copy of the GNU General Public License
 # along with minqlx. If not, see <http://www.gnu.org/licenses/>.
+#
+#VARIABLES TO SET
+#----------------
+#SOUNDBAN_FILE = "soundbans.txt"
+#SOUND_SPAM_LIMIT = 3
+#SOUND_SPAM_TIMEFRAME = 10
+#SOUND_BAN_DURATION = "300 seconds"
+
+#COMMANDS
+#--------
+#!soundban <player/steam id> <duration> <optional name>
+#!soundunban <player/steam id>
+#!soundbans <optional steam id to search>
 
 import minqlx
 import random
