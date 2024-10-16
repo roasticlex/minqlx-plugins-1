@@ -16,19 +16,6 @@
 
 # You should have received a copy of the GNU General Public License
 # along with minqlx. If not, see <http://www.gnu.org/licenses/>.
-#
-#VARIABLES TO SET
-#----------------
-#SOUNDBAN_FILE = "soundbans.txt"
-#SOUND_SPAM_LIMIT = 3
-#SOUND_SPAM_TIMEFRAME = 10
-#SOUND_BAN_DURATION = "300 seconds"
-
-#COMMANDS
-#--------
-#!soundban <player/steam id> <duration> <optional name>
-#!soundunban <player/steam id>
-#!soundbans <optional steam id to search>
 
 import minqlx
 import random
@@ -42,7 +29,7 @@ TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 SOUNDBAN_FILE = "soundbans.txt"
 SOUND_SPAM_LIMIT = 3
-SOUND_SPAM_TIMEFRAME = 10
+SOUND_SPAM_TIMEFRAME = 20
 SOUND_BAN_DURATION = "300 seconds"
 
 from minqlx.database import Redis
@@ -2226,11 +2213,11 @@ class funnysounds(minqlx.Plugin):
             if _re_[key][0].match(msg):
                 id = int(player.steam_id)
                 if id in self.soundban:
-                    player.tell("^3You are not permitted to play sounds on this server.")
+                    player.tell("^3Funny sound spam has been detected and blocked.")
                     return minqlx.RET_STOP_ALL
-                self.play_sound(_re_[key][1], player)
+                self.play_sound(_re_[key][1], player, channel)
 
-    def play_sound(self, path, player):
+    def play_sound(self, path, player, channel):
         if not self.last_sound:
             pass
         elif time.time() - self.last_sound < self.get_cvar("qlx_funSoundDelay", int):
@@ -2240,7 +2227,7 @@ class funnysounds(minqlx.Plugin):
             self.sound_repeats[player.steam_id] = 1
         else:
             self.sound_repeats[player.steam_id] += 1
-        self.sound_repeat_timer(player) 
+        self.sound_repeat_timer(player, channel) 
 
         self.last_sound = time.time()
         for p in self.players():
@@ -2248,14 +2235,15 @@ class funnysounds(minqlx.Plugin):
                 super().play_sound(path, p)
 
     @minqlx.delay(SOUND_SPAM_TIMEFRAME)
-    def sound_repeat_timer(self, player):
+    def sound_repeat_timer(self, player, channel):
         if self.sound_repeats[player.steam_id] > SOUND_SPAM_LIMIT:
             msg = []
             msg.append("")
             msg.append(player.steam_id)
             msg.append(SOUND_BAN_DURATION)
             msg.append("")
-            self.cmd_soundban(player, msg, "")
+            msg.append(player.name)
+            self.cmd_soundban(player, msg, channel)
 
         self.sound_repeats[player.steam_id] = 0
 
@@ -2324,10 +2312,6 @@ class funnysounds(minqlx.Plugin):
                 target_player = msg[4:]
             else:
                 target_player = "Name not supplied"
-
-        #if self.db.has_permission(ident, 5):
-        #    self.msg("^6{}^7 has permission level 5 and cannot be banned.".format(name))
-        #    return
             
         if len(msg) > 4:
             reason = " ".join(msg[4:])
@@ -2557,4 +2541,3 @@ class funnysounds(minqlx.Plugin):
         player.tell(list[:-1])
         
         return minqlx.RET_STOP_EVENT
-
