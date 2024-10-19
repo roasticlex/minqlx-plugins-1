@@ -7,7 +7,7 @@
 <strong>bot_antispec.py</strong> - fixes bug with bot_minplayers and teamsizes lower than player limit that causes bots to spec (kicks them)
 
 <strong>chatbot.py</strong> - Cohere chatbot that responds to user chat
-- run: pip install chatterbot
+- run: "pip install chatterbot" and "pip install cohere"
 - register and get an API key from https://dashboard.cohere.com/api-keys
 - add to server.cfg: set qlx_chatbot_api_key <API KEY>
 - !chatbot <message> - get a response from chatbot
