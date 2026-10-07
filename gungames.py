@@ -30,76 +30,91 @@ class gungames(minqlx.Plugin):
         if self.game.state != "in_progress":
             self.callvote("map " + self.get_cvar("mapname") + " guantlets-ffa", "guantlet only")
             self.msg("{}^7 called a vote.".format(caller.name))
+            return minqlx.RET_STOP_ALL
 
     def cmd_mgs(self, caller, msg, channel):
         if self.game.state != "in_progress":
             self.callvote("map " + self.get_cvar("mapname") + " mg-ffa", "mg only")
             self.msg("{}^7 called a vote.".format(caller.name))
+            return minqlx.RET_STOP_ALL
 
     def cmd_shotties(self, caller, msg, channel):
         if self.game.state != "in_progress":
             self.callvote("map " + self.get_cvar("mapname") + " shotguns-ffa", "shotguns only")
             self.msg("{}^7 called a vote.".format(caller.name))
+            return minqlx.RET_STOP_ALL
 
     def cmd_nades(self, caller, msg, channel):
         if self.game.state != "in_progress":
             self.callvote("map " + self.get_cvar("mapname") + " nades-ffa", "nades only")
             self.msg("{}^7 called a vote.".format(caller.name))
+            return minqlx.RET_STOP_ALL
 
     def cmd_rockets(self, caller, msg, channel):
         if self.game.state != "in_progress":
             self.callvote("map " + self.get_cvar("mapname") + " rockets-ffa", "rockets only")
             self.msg("{}^7 called a vote.".format(caller.name))
+            return minqlx.RET_STOP_ALL
 
     def cmd_lgs(self, caller, msg, channel):
         if self.game.state != "in_progress":
             self.callvote("map " + self.get_cvar("mapname") + " lg-ffa", "lg only")
             self.msg("{}^7 called a vote.".format(caller.name))
+            return minqlx.RET_STOP_ALL
 
     def cmd_rails(self, caller, msg, channel):
         if self.game.state != "in_progress":
             self.callvote("map " + self.get_cvar("mapname") + " rail-ffa", "rail only")
             self.msg("{}^7 called a vote.".format(caller.name))
+            return minqlx.RET_STOP_ALL
 
     def cmd_plasmas(self, caller, msg, channel):
         if self.game.state != "in_progress":
             self.callvote("map " + self.get_cvar("mapname") + " plasma-ffa", "plasma only")
             self.msg("{}^7 called a vote.".format(caller.name))
+            return minqlx.RET_STOP_ALL
 
     def cmd_bfgs(self, caller, msg, channel):
         if self.game.state != "in_progress":
             self.callvote("map " + self.get_cvar("mapname") + " bfg-ffa", "bfg only")
             self.msg("{}^7 called a vote.".format(caller.name))
+            return minqlx.RET_STOP_ALL
 
     def cmd_nails(self, caller, msg, channel):
         if self.game.state != "in_progress":
             self.callvote("map " + self.get_cvar("mapname") + " nail-ffa", "nailguns only")
             self.msg("{}^7 called a vote.".format(caller.name))
+            return minqlx.RET_STOP_ALL
 
     def cmd_mines(self, caller, msg, channel):
         if self.game.state != "in_progress":
             self.callvote("map " + self.get_cvar("mapname") + " prox-ffa", "mines only")
             self.msg("{}^7 called a vote.".format(caller.name))
+            return minqlx.RET_STOP_ALL
 
     def cmd_chainguns(self, caller, msg, channel):
         if self.game.state != "in_progress":
             self.callvote("map " + self.get_cvar("mapname") + " chain-ffa", "chainguns only")
             self.msg("{}^7 called a vote.".format(caller.name))
+            return minqlx.RET_STOP_ALL
 
     def cmd_hmg(self, caller, msg, channel):
         if self.game.state != "in_progress":
             self.callvote("map " + self.get_cvar("mapname") + " hmg-ffa", "hmg only")
             self.msg("{}^7 called a vote.".format(caller.name))
+            return minqlx.RET_STOP_ALL
 
     def cmd_kami(self, caller, msg, channel):
         if self.game.state != "in_progress":
             self.callvote("map " + self.get_cvar("mapname") + " kami-ffa", "kamikaze only")
             self.msg("{}^7 called a vote.".format(caller.name))
+            return minqlx.RET_STOP_ALL
 
     def cmd_haste(self, caller, msg, channel):
         if self.game.state != "in_progress":
             self.callvote("map " + self.get_cvar("mapname") + " haste-ffa", "permahaste")
             self.msg("{}^7 called a vote.".format(caller.name))
+            return minqlx.RET_STOP_ALL
 
     def handle_player_spawn(self, player):
         if hasattr(self.game, 'factory'):
